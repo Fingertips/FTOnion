@@ -1,4 +1,5 @@
 #import "View+FTOnion.h"
+#import <objc/runtime.h>
 
 @interface VIEW_CLASS (FTOnionPrivate)
 - (NSArray *)_viewsByClass:(Class)viewClass recursive:(BOOL)recursive;
@@ -8,8 +9,8 @@
 
 + (id)viewsInKeyWindowMatching:(id)classOrNameOrQuery;
 {
-  if ([classOrNameOrQuery isKindOfClass:NSClassFromString(@"Class")]) {
-    return [[[UIApplication sharedApplication] keyWindow] viewsByClass:[classOrNameOrQuery class]];
+  if (class_isMetaClass(object_getClass(classOrNameOrQuery))) {
+    return [[[UIApplication sharedApplication] keyWindow] viewsByClass:classOrNameOrQuery];
   } else {
     NSLog(@"Searching is not supported yet by: %@", classOrNameOrQuery);
   }
