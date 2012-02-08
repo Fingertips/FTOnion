@@ -8,7 +8,7 @@
 - (NSArray *)array;
 - (NSUInteger)count;
 - (BOOL)isEmpty;
-- (id)index:(NSInteger)index;
+- (id)at:(NSInteger)index;
 
 - (id)_filteredList:(NSArray *)array;
 

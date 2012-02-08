@@ -1,9 +1,11 @@
 #import "FTOnion.h"
 
+@class FTOnionViewSet;
+
 @interface VIEW_CLASS (FTOnion)
 
 - (FTOnionViewSet *)viewsByClass:(Class)viewClass;
 - (NSArray *)_viewsByClass:(Class)viewClass recursive:(BOOL)recursive;
-- (BACON_VIEW *)viewByName:(NSString *)accessibilityLabel;
+- (VIEW_CLASS *)viewByName:(NSString *)accessibilityLabel;
 
 @end
