@@ -11,5 +11,4 @@
 #define VIEW_CLASS NSView
 #endif
 
-#import "FTOnionViewSet.h"
 #import "View+FTOnion.h"

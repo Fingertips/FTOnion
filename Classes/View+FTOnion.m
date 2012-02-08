@@ -1,13 +1,41 @@
 #import "View+FTOnion.h"
 
+@interface VIEW_CLASS (FTOnionPrivate)
+- (NSArray *)_viewsByClass:(Class)viewClass recursive:(BOOL)recursive;
+@end
+
 @implementation VIEW_CLASS (FTOnion)
 
 // Sorts all views by their origin in the window.
-- (FTOnionViewSet *)viewsByClass:(Class)viewClass {
-  return [[[FTOnionViewSet alloc] initWithArray:[self _viewsByClass:viewClass recursive:YES]] autorelease];
+- (NSArray *)viewsByClass:(Class)viewClass;
+{
+  return [self viewsByClass:viewClass sortByOrigin:YES];
 }
 
-- (NSArray *)_viewsByClass:(Class)viewClass recursive:(BOOL)recursive {
+- (NSArray *)viewsByClass:(Class)viewClass sortByOrigin:(BOOL)sortByOrigin;
+{
+  NSArray *views = [self _viewsByClass:viewClass recursive:YES];
+  if (sortByOrigin) {
+    return [views sortedArrayUsingComparator:^(id view1, id view2) {
+      CGPoint origin1 = [(VIEW_CLASS *)view1 convertPoint:((VIEW_CLASS *)view1).bounds.origin toView:nil];
+      CGPoint origin2 = [(VIEW_CLASS *)view2 convertPoint:((VIEW_CLASS *)view2).bounds.origin toView:nil];
+      if (floor(origin1.y) > floor(origin2.y)) {
+        return (NSComparisonResult)NSOrderedDescending;
+      } else if (floor(origin1.y) < floor(origin2.y)) {
+        return (NSComparisonResult)NSOrderedAscending;
+      } else if (floor(origin1.x) > floor(origin2.x)) {
+        return (NSComparisonResult)NSOrderedDescending;
+      } else if (floor(origin1.x) < floor(origin2.x)) {
+        return (NSComparisonResult)NSOrderedAscending;
+      }
+      return (NSComparisonResult)NSOrderedSame;
+    }];
+  }
+  return views;
+}
+
+- (NSArray *)_viewsByClass:(Class)viewClass recursive:(BOOL)recursive;
+{
   NSMutableArray *result = [NSMutableArray array];
   for (VIEW_CLASS *view in self.subviews) {
     if ([view isKindOfClass:viewClass]) {
