@@ -6,6 +6,16 @@
 
 @implementation VIEW_CLASS (FTOnion)
 
++ (id)viewsInKeyWindowMatching:(id)classOrNameOrQuery;
+{
+  if ([classOrNameOrQuery isKindOfClass:NSClassFromString(@"Class")]) {
+    return [[[UIApplication sharedApplication] keyWindow] viewsByClass:[classOrNameOrQuery class]];
+  } else {
+    NSLog(@"Searching is not supported yet by: %@", classOrNameOrQuery);
+  }
+  return nil;
+}
+
 // Sorts all views by their origin in the window.
 - (NSArray *)viewsByClass:(Class)viewClass;
 {
