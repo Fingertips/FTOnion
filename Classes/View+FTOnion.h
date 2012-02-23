@@ -1,6 +1,6 @@
 #import "FTOnion.h"
 
-#define $(classOrNameOrQuery) [VIEW_CLASS viewsInKeyWindowMatching:classOrNameOrQuery]
+#define $(klass) [VIEW_CLASS viewsInKeyWindowMatching:[klass class]]
 
 @interface VIEW_CLASS (FTOnion)
 
