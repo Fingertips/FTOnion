@@ -1,5 +1,8 @@
 #import "View+FTOnion.h"
-#import <objc/runtime.h>
+
+#if TARGET_OS_IPHONE
+#import "UIEventExtensions.h"
+#endif
 
 @interface VIEW_CLASS (FTOnionPrivate)
 - (NSArray *)_viewsByClass:(Class)viewClass recursive:(BOOL)recursive;
@@ -7,14 +10,14 @@
 
 @implementation VIEW_CLASS (FTOnion)
 
-+ (id)viewsInKeyWindowMatching:(id)classOrNameOrQuery;
++ (id)viewsInKeyWindowMatchingClass:(Class)klass;
 {
-  if (class_isMetaClass(object_getClass(classOrNameOrQuery))) {
-    return [[[UIApplication sharedApplication] keyWindow] viewsByClass:classOrNameOrQuery];
-  } else {
-    NSLog(@"Searching is not supported yet by: %@", classOrNameOrQuery);
-  }
-  return nil;
+  return [[[UIApplication sharedApplication] keyWindow] viewsByClass:klass];
+}
+
++ (id)viewInKeyWindowWithName:(NSString *)accessibilityLabel;
+{
+  return [[[UIApplication sharedApplication] keyWindow] viewByName:accessibilityLabel];
 }
 
 // Sorts all views by their origin in the window.
@@ -109,5 +112,21 @@
   }
   return nil;
 }
+
+#if TARGET_OS_IPHONE
+- (void)tap {
+  UITouch *touch = [[UITouch alloc] initInView:self];
+  UIEvent *eventDown = [[UIEvent alloc] initWithTouch:touch];
+  [touch.view touchesBegan:[eventDown allTouches] withEvent:eventDown];
+  
+  UIEvent *eventUp = [[UIEvent alloc] initWithTouch:touch];
+  [touch setPhase:UITouchPhaseEnded];
+  [touch.view touchesEnded:[eventUp allTouches] withEvent:eventUp];
+
+  [eventDown release];
+  [eventUp release];
+  [touch release];
+}
+#endif
 
 @end
