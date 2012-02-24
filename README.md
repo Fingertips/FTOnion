@@ -18,6 +18,8 @@ it(@"has a segmented control that switches the type of task shown", ^{
 Returns the UI element whose accessibility label matches the given string.
 Starts traversing from the key UIWindow instance.
 
+_This needs ‘accessibility’ enabled in order to function._
+
 ```objc
 it(@"shows the `completed' tab", ^{
   UIView *tab = $(@"Completed"); // instance of UISegment
